@@ -1,0 +1,3 @@
+model,split,MAE,MSE,RMSE,R2
+baseline,val,15.7952,355.5204,18.8552,-0.0212
+gradient_boosting,val,3.9166,24.1722,4.9165,0.9306
