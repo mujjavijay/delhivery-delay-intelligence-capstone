@@ -6,7 +6,7 @@
 import os
 import numpy as np
 import pandas as pd
-#from src.shipment_prep import clean_shipments, build_features, FEATURES, PROMISED_HOURS
+from src.shipment_prep import clean_shipments, build_features, FEATURES, PROMISED_HOURS
 
 os.makedirs("outputs", exist_ok=True)
 raw_ship_df = pd.read_csv("/content/data/raw_shipments.csv")
