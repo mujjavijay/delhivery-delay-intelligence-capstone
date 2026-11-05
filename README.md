@@ -4,7 +4,7 @@
 Total raw data had 1224 rows. exact duplicates were 24. After removing duplicated the remaining records are 1200. 
 Total Delayed are 278 which is 23.16% of total orders
 
-(i) which service type is delayed most often and at what rate;/n
+(i) which service type is delayed most often and at what rate;
 Answer: Express service type is  most often delayed. 119 out of 243 at a rate of 0.4897
 (ii) how delay rate changes from Tier 1 to Tier 3; 
 Answer: Tier 1 has 0.0400 delay rate, Tier 2 has 0.2150 and Tier 3 has 0.4400 delay rate.
