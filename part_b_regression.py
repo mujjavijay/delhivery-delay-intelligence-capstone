@@ -69,16 +69,17 @@ for d in [1, 2, 3, 4, 6, 8, 12, None]:
         best_val, best_depth = va, d
 pd.DataFrame(depth_rows).round(4).to_csv("outputs/part_b_tree_depth.csv", index=False)
 
-                       
+
 #Four candidate models, each fitted on the training rows and scored on the validation rows with MAE, MSE, RMSE and R²: LinearRegression inside a Pipeline of ("scaler", StandardScaler()) then ("model", LinearRegression()); the decision tree from task 4; RandomForestRegressor(n_estimators=100, random_state=42); GradientBoostingRegressor(n_estimators=100, learning_rate=0.1, random_state=42). Write outputs/part_b_metrics.csv with columns model, split, MAE, MSE, RMSE, R2 and rows named mean_baseline, linear_regression, decision_tree, random_forest, gradient_boosting (all split = val), plus the final-test row from task 7. RMSE must equal the square root of MSE (±0.001).
 candidates = {
-    
+
     "linear_regression": Pipeline([("scaler", StandardScaler()), ("model", LinearRegression())]),
     "decision_tree": DecisionTreeRegressor(max_depth=best_depth, random_state=42),
     "random_forest": RandomForestRegressor(n_estimators=100, random_state=42),
     "gradient_boosting": GradientBoostingRegressor(n_estimators=100, learning_rate=0.1, random_state=42),
 }
 val_rmse = {}
+rows = []
 for name, m in candidates.items():
     m.fit(X_train, Y_train)
     pred = m.predict(X_val)
@@ -87,15 +88,16 @@ for name, m in candidates.items():
     rmse = np.sqrt(mse)
     r2 = r2_score(Y_val, pred)
     val_rmse[name] = rmse
-    metrics_candidates = pd.concat([metrics, pd.DataFrame({
-        "model": [name],
-        "split": ["val"],
-        "MAE": [mae],
-        "MSE": [mse],
-        "RMSE": [rmse],
-        "R2": [r2],
-    })], ignore_index=True)
-metrics_candidates.round(4).to_csv("outputs/part_b_metrics.csv", index=False)
+    rows.append({"model": name, "split": "val", "MAE": mae, "MSE": mse, "RMSE": rmse, "R2": r2})
+    # metrics_candidates = pd.concat([metrics, pd.DataFrame({
+    #     "model": [name],
+    #     "split": ["val"],
+    #     "MAE": [mae],
+    #     "MSE": [mse],
+    #     "RMSE": [rmse],
+    #     "R2": [r2],
+    # })], ignore_index=True)
+#metrics_candidates.round(4).to_csv("outputs/part_b_metrics.csv", index=False)
 
 
 #Learning-rate experiment. Fit GradientBoostingRegressor(n_estimators=100, learning_rate=lr, random_state=42) for lr in 0.01, 0.1, 1.0 and write outputs/part_b_gb_learning_rate.csv (learning_rate, val_rmse, val_r2).
@@ -125,10 +127,8 @@ mse_final = mean_squared_error(Y_test, candidates[final_name].predict(X_test))
 r2_final = r2_score(Y_test, candidates[final_name].predict(X_test))
 mae_final = mean_absolute_error(Y_test, candidates[final_name].predict(X_test))
 rsme_final = np.sqrt(mse)
-    
-                         
-rows.append({"model": final_name, "split": "test","MSE": mse_final,"R2": r2_final,"MAE": mae_final, "RSME": rsme_final})
-pd.DataFrame(rows)[["model", "split", "MSE", "R2", "MAE", "RSME"]].round(4).to_csv("outputs/part_b_metrics.csv", index=False)
-print("best depth:", best_depth, "| ranking:", ranking, "| final:", final_name)                               
 
 
+rows.append({"model": final_name, "split": "test","MAE": mae_final,"MSE": mse_final,"RMSE": rsme_final,"R2": r2_final })
+pd.DataFrame(rows)[["model", "split", "MAE", "MSE", "RMSE", "R2"]].round(4).to_csv("outputs/part_b_metrics.csv", index=False)
+print("best depth:", best_depth, "| ranking:", ranking, "| final:", final_name)
